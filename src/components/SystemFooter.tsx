@@ -153,6 +153,51 @@ export const SystemFooter: React.FC<SystemFooterProps> = ({
           <span className="w-12 h-12 flex items-center justify-center rounded-full bg-slate-900/50 border border-slate-800 hover:border-[#d4af37] hover:scale-110 hover:bg-[#d4af37]/10 transition-all cursor-pointer text-[24px] shadow-lg">💬</span>
         </div>
 
+        {/* Deployment & Version Metadata Block */}
+        <div className="w-full max-w-4xl mx-auto p-4 rounded-2xl bg-slate-900/90 border border-[#d4af37]/30 text-right font-sans text-xs space-y-2 shadow-xl">
+          <div className="flex flex-wrap items-center justify-between gap-2 pb-2 border-b border-slate-800">
+            <div className="flex items-center gap-2 text-[#d4af37] font-black text-sm">
+              <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
+              <span>ℹ️ معلومات الإصدار والنشر الرسمي المعتمد (Live Auto-Deploy)</span>
+            </div>
+            <span className="px-2.5 py-0.5 rounded-full bg-emerald-950 text-emerald-300 border border-emerald-500/40 text-[11px] font-bold">
+              ✅ حالة النشر: محدّث ومتزامن تلقائياً
+            </span>
+          </div>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-1 text-slate-300">
+            <div>
+              <span className="text-slate-400 block text-[10px]">رقم الإصدار:</span>
+              <span className="font-mono font-bold text-white">v4.5.2026</span>
+            </div>
+            <div>
+              <span className="text-slate-400 block text-[10px]">تاريخ النشر المعتمد:</span>
+              <span className="font-mono font-bold text-[#d4af37]">20/09/2026</span>
+            </div>
+            <div>
+              <span className="text-slate-400 block text-[10px]">رقم البناء (Build):</span>
+              <span className="font-mono font-bold text-slate-200">BUILD-SAP-6103-REL-2026</span>
+            </div>
+            <div>
+              <span className="text-slate-400 block text-[10px]">دورة التحديث:</span>
+              <span className="font-mono font-bold text-emerald-400">Vercel ⚡ Auto-Deploy</span>
+            </div>
+          </div>
+          <div className="pt-2 flex flex-wrap items-center justify-between gap-2 text-[11px] text-slate-400 border-t border-slate-800/80">
+            <span className="font-mono text-blue-300 break-all select-all font-semibold">
+              🌐 الرابط الرسمي المعتمد: https://mdanmedo-erp-sap-s-4hana-6103-ai-st.vercel.app
+            </span>
+            <button
+              onClick={() => {
+                navigator.clipboard?.writeText("https://mdanmedo-erp-sap-s-4hana-6103-ai-st.vercel.app");
+                alert("تم نسخ الرابط الرسمي المعتمد بنجاح!");
+              }}
+              className="px-2.5 py-1 bg-[#d4af37]/20 hover:bg-[#d4af37]/30 text-[#d4af37] border border-[#d4af37]/40 rounded-lg font-bold text-[11px] transition-all cursor-pointer"
+            >
+              📋 نسخ الرابط الرسمي
+            </button>
+          </div>
+        </div>
+
         {/* Copyright & Logo - Centered Stack */}
         <div className="flex flex-col items-center gap-6 order-2 text-center">
           <BzmtLogo size="lg" variant="monogram" />

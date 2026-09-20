@@ -4,8 +4,11 @@
  * Official Live Vercel & Cloud Run Domains
  */
 
-export const OFFICIAL_APP_DOMAIN = "https://ais-pre-nb2t4ysydt63tbljcawurb-174680061958.europe-west1.run.app";
-export const VERCEL_APP_DOMAIN = "https://mdanmedo-erp-sap-s-4hana-6103-ai-st-iota.vercel.app";
+export const OFFICIAL_APP_DOMAIN = "https://mdanmedo-erp-sap-s-4hana-6103-ai-st.vercel.app";
+export const VERCEL_APP_DOMAIN = "https://mdanmedo-erp-sap-s-4hana-6103-ai-st.vercel.app";
+export const OFFICIAL_APP_VERSION = "v4.5.2026";
+export const OFFICIAL_BUILD_NUMBER = "BUILD-SAP-6103-REL-2026";
+export const OFFICIAL_RELEASE_DATE = "20/09/2026";
 
 /**
  * Returns the Vercel production domain or active origin

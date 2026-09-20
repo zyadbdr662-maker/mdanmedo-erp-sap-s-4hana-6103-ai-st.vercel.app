@@ -10,6 +10,7 @@ import {
 import {
   PRE_GENERATED_200_TENANTS,
   PreGeneratedTenant,
+  VERCEL_PRODUCTION_BASE,
   getStored200Tenants,
   saveStored200Tenants,
 } from "../data/preGeneratedTenants";
@@ -199,7 +200,7 @@ export const SaaSPlatformView: React.FC<SaaSPlatformViewProps> = ({
     const slug = `company-${nextIndex}`;
     const cr = `CR-1010${(500000 + nextIndex * 41).toString().substring(0, 6)}`;
     const vat = `300${(748291000 + nextIndex * 97).toString().substring(0, 9)}00003`;
-    const vercelBase = "https://mdanmedo-erp-sap-s-4hana-6103-ai-st-iota.vercel.app";
+    const vercelBase = VERCEL_PRODUCTION_BASE;
     const masterDomain = `${vercelBase}/?tenant=${slug}`;
     const vercelUrl = masterDomain;
     const unlockCode = `MEDO-UNLOCK-2026-C${nextIndex.toString().padStart(3, "0")}-${Math.random().toString(36).substring(2, 6).toUpperCase()}`;
@@ -335,7 +336,7 @@ export const SaaSPlatformView: React.FC<SaaSPlatformViewProps> = ({
     };
 
     const newEmpId = `emp-${selectedTenantForEmp.index}-${Date.now().toString().slice(-4)}`;
-    const vercelBase = "https://mdanmedo-erp-sap-s-4hana-6103-ai-st-iota.vercel.app";
+    const vercelBase = VERCEL_PRODUCTION_BASE;
     const subLink = `${vercelBase}/?tenant=${selectedTenantForEmp.slug}&role=${newEmpRole}&token=AUTH_${newEmpRole}_${Date.now().toString().slice(-4)}&path=/employee/${newEmpRole.toLowerCase()}`;
 
     const updatedEmployees = [
