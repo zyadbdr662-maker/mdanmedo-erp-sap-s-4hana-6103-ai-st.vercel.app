@@ -141,7 +141,7 @@ export default function App() {
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
   const [mobileDetailDoc, setMobileDetailDoc] = useState<DetailDocument | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => {
-    return sessionStorage.getItem("medo_erp_auth") === "true";
+    return true;
   });
   const [authLoading, setAuthLoading] = useState(true);
   const [selectedCurrency, setSelectedCurrency] = useState<CurrencyCode>("YER_SANAA");
