@@ -236,6 +236,14 @@ export const ExecutiveMasterSystemSuite: React.FC<ExecutiveMasterSystemSuiteProp
 
           <div className="flex flex-wrap items-center gap-3">
             <button
+              onClick={() => window.dispatchEvent(new Event("open_self_registration"))}
+              className="px-4 py-2.5 bg-gradient-to-r from-emerald-600 via-emerald-700 to-teal-700 hover:from-emerald-500 hover:to-teal-600 text-white font-black text-xs sm:text-sm rounded-xl shadow-lg shadow-emerald-950/50 border border-emerald-400 flex items-center gap-2 transition hover:scale-105 active:scale-95 cursor-pointer"
+            >
+              <Building2 className="w-4 h-4 text-emerald-200" />
+              <span>✨ فتح وتفعيل منشأة جديدة (SaaS)</span>
+            </button>
+
+            <button
               onClick={() => setActiveTab("UNIVERSAL_SEARCH")}
               className="px-4 py-2.5 bg-gradient-to-r from-amber-500 via-amber-600 to-yellow-600 hover:from-amber-400 hover:to-yellow-500 text-slate-950 font-black text-xs sm:text-sm rounded-xl shadow-lg shadow-amber-950/50 border border-amber-300 flex items-center gap-2 transition hover:scale-105 active:scale-95 cursor-pointer"
             >

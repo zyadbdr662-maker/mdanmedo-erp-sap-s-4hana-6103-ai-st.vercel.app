@@ -442,8 +442,69 @@ export const PRE_GENERATED_200_TENANTS: PreGeneratedTenant[] = Array.from({ leng
 // Alias export for standard naming
 export const preGeneratedTenants = [...MANUAL_VIP_TENANTS, ...PRE_GENERATED_200_TENANTS];
 
-const TENANTS_STORAGE_KEY = "medo_erp_200_tenants_v3";
-const REGISTERED_TENANTS_KEY = "medo_erp_registered_tenants_v1";
+export const TENANTS_STORAGE_KEY = "medo_erp_200_tenants_v3";
+export const REGISTERED_TENANTS_KEY = "medo_erp_registered_tenants_v1";
+
+/**
+ * Robust Arabic-to-Latin transliteration helper for tenant slugs
+ */
+export function generateTenantSlug(nameAr: string, nameEn?: string, nextIndex: number = 1): string {
+  if (nameEn && nameEn.trim()) {
+    const cleanEn = nameEn
+      .toLowerCase()
+      .trim()
+      .replace(/[^a-z0-9]/g, "-")
+      .replace(/-+/g, "-")
+      .replace(/^-|-$/g, "");
+    if (cleanEn.length >= 3) {
+      const suffix = Math.random().toString(36).substring(2, 6);
+      return `${cleanEn}-${suffix}`;
+    }
+  }
+
+  const arabicMap: Record<string, string> = {
+    "شركة": "company",
+    "مؤسسة": "foundation",
+    "مجموعة": "group",
+    "عالم": "alam",
+    "الديكور": "decor",
+    "ديكور": "decor",
+    "الحديث": "modern",
+    "حديث": "modern",
+    "الأمل": "alamal",
+    "النور": "alnoor",
+    "البدر": "albadr",
+    "الفخامة": "fakhamah",
+    "القمة": "qimma",
+    "الريان": "rayyan",
+    "الرواد": "ruwwad",
+    "التجارة": "trading",
+    "المقاولات": "contracting",
+    "للأدوية": "pharma",
+    "المتجددة": "renewable",
+    "طاقة": "energy",
+    "أنظمة": "systems",
+    "تقنية": "tech",
+  };
+
+  let transliterated = (nameAr || "").trim();
+  for (const [ar, en] of Object.entries(arabicMap)) {
+    transliterated = transliterated.replace(new RegExp(ar, "g"), ` ${en} `);
+  }
+
+  const clean = transliterated
+    .toLowerCase()
+    .replace(/[^a-z0-9]/g, "-")
+    .replace(/-+/g, "-")
+    .replace(/^-|-$/g, "");
+
+  const suffix = Math.random().toString(36).substring(2, 6);
+  if (clean && clean.length >= 3) {
+    return `${clean}-${suffix}`;
+  }
+
+  return `enterprise-${nextIndex}-${suffix}`;
+}
 
 /**
  * Retrieves all registered and pre-generated tenants combined
@@ -511,16 +572,8 @@ export function registerSelfServiceTenant(input: RegisterTenantInput): PreGenera
   const allCurrent = getStored200Tenants();
   const nextIndex = allCurrent.length + 1;
   
-  // Clean slug generation
-  const cleanBase = (input.nameEn || input.nameAr)
-    .toLowerCase()
-    .trim()
-    .replace(/[^a-z0-9]/g, "-")
-    .replace(/-+/g, "-")
-    .replace(/^-|-$/g, "");
-  
-  const randomSuffix = Math.random().toString(36).substring(2, 6);
-  const slug = cleanBase ? `${cleanBase}-${randomSuffix}` : `enterprise-${nextIndex}`;
+  // Clean slug generation with Arabic transliteration support
+  const slug = generateTenantSlug(input.nameAr, input.nameEn, nextIndex);
   const id = slug;
   const vercelBase = VERCEL_PRODUCTION_BASE;
   const masterLink = `${vercelBase}/?tenant=${id}`;
@@ -773,6 +826,18 @@ export function findTenantById(tenantIdentifier: string | null | undefined): Pre
             allTenants.find((t) => t.index === num || t.id === `company-${num}`);
     if (found) return found;
   }
+
+  // Check matching by name (Arabic or English)
+  found = storedList.find((t) => 
+    (t.name && t.name.toLowerCase().trim() === clean) || 
+    (t.companyNameAr && t.companyNameAr.toLowerCase().trim() === clean) ||
+    (t.nameEn && t.nameEn.toLowerCase().trim() === clean)
+  ) || allTenants.find((t) => 
+    (t.name && t.name.toLowerCase().trim() === clean) || 
+    (t.companyNameAr && t.companyNameAr.toLowerCase().trim() === clean) ||
+    (t.nameEn && t.nameEn.toLowerCase().trim() === clean)
+  );
+  if (found) return found;
 
   return null;
 }

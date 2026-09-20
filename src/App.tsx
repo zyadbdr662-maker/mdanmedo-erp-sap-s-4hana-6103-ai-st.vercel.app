@@ -192,7 +192,7 @@ export default function App() {
 
   /**
    * [VIP TENANT LOADER & STRICT SESSION ISOLATION]
-   * Detects tenant change from URL, purges conflicting tenant cache, and synchronizes company branding & permissions.
+   * Detects tenant change from URL, verifies against currentTenant/storedSlug, purges conflicting tenant cache, and synchronizes company branding & permissions.
    */
   useEffect(() => {
     const searchParams = new URLSearchParams(window.location.search);
@@ -200,10 +200,22 @@ export default function App() {
     
     if (tenantParam) {
       const storedSlug = localStorage.getItem("medo_active_tenant_slug");
+      const currentTenantRaw = localStorage.getItem("currentTenant");
       const matched = findTenantById(tenantParam);
       const targetSlug = matched ? matched.id : tenantParam.toLowerCase().trim();
       
-      // Always clear stale company / header caches on link opening
+      // Check for mismatch against stored active slug or currentTenant object
+      let isMismatch = storedSlug && storedSlug !== targetSlug;
+      if (!isMismatch && currentTenantRaw) {
+        try {
+          const current = JSON.parse(currentTenantRaw);
+          if (current.id !== targetSlug && current.slug !== targetSlug) {
+            isMismatch = true;
+          }
+        } catch (e) {}
+      }
+
+      // Always clear stale individual company branding caches
       localStorage.removeItem('tenantName');
       localStorage.removeItem('companyName');
       localStorage.removeItem('mdo_print_header_ar');
@@ -211,12 +223,12 @@ export default function App() {
       localStorage.removeItem('mdo_print_phone');
       localStorage.removeItem('mdo_print_tax_reg');
 
-      if (storedSlug && storedSlug !== targetSlug) {
-        console.log(`[App] Tenant switch detected: from ${storedSlug} to ${targetSlug}. Resetting session & storage...`);
-        localStorage.removeItem('currentTenant');
+      if (isMismatch) {
+        console.log(`[IsolationGuard] Tenant mismatch detected: active ${storedSlug} vs requested ${targetSlug}. Purging stale session...`);
         localStorage.removeItem('currentSession');
         localStorage.removeItem('medo_erp_state_v1');
         localStorage.removeItem('medo_erp_current_user_v1');
+        localStorage.removeItem('medo_original_manager_session');
         localStorage.removeItem('medo_erp_auth');
         try { sessionStorage.clear(); } catch(e) {}
       }

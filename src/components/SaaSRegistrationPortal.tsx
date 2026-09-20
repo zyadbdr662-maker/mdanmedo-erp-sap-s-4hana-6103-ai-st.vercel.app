@@ -39,6 +39,8 @@ import {
   registerSelfServiceTenant,
   PreGeneratedTenant,
   VERCEL_PRODUCTION_BASE,
+  TENANTS_STORAGE_KEY,
+  REGISTERED_TENANTS_KEY,
 } from "../data/preGeneratedTenants";
 import {
   instantNotificationService,
@@ -115,19 +117,18 @@ export const SaaSRegistrationPortal: React.FC<SaaSRegistrationPortalProps> = ({
   // [CRITICAL AUTO-LOGOUT ON MOUNT] Purge old sessions & cached credentials to ensure clean tenant isolation
   useEffect(() => {
     try {
+      const savedReg = localStorage.getItem(REGISTERED_TENANTS_KEY);
+      const saved200 = localStorage.getItem(TENANTS_STORAGE_KEY);
+
+      // Full clear
+      localStorage.clear();
       sessionStorage.clear();
-      localStorage.removeItem("medo_erp_auth");
-      localStorage.removeItem("medo_erp_admin_mode");
-      localStorage.removeItem("medo_erp_current_user_v1");
-      localStorage.removeItem("medo_original_manager_session");
-      localStorage.removeItem("currentTenant");
-      localStorage.removeItem("currentSession");
-      localStorage.removeItem("tenantName");
-      localStorage.removeItem("companyName");
-      localStorage.removeItem("mdo_print_header_ar");
-      localStorage.removeItem("mdo_print_header_en");
-      localStorage.removeItem("mdo_print_phone");
-      localStorage.removeItem("mdo_print_tax_reg");
+
+      // Restore registered tenants registry
+      if (savedReg) localStorage.setItem(REGISTERED_TENANTS_KEY, savedReg);
+      if (saved200) localStorage.setItem(TENANTS_STORAGE_KEY, saved200);
+
+      window.dispatchEvent(new Event("storage"));
     } catch (e) {
       console.warn("Storage purge on registration mount:", e);
     }
@@ -1070,19 +1071,17 @@ export const SaaSRegistrationPortal: React.FC<SaaSRegistrationPortalProps> = ({
 
               <button
                 onClick={() => {
-                  const registeredKey = "medo_registered_tenants_v1";
-                  const tenantsListKey = "medo_saas_200_tenants_v1";
                   let savedRegistered: string | null = null;
                   let savedTenants: string | null = null;
                   try {
-                    savedRegistered = localStorage.getItem(registeredKey);
-                    savedTenants = localStorage.getItem(tenantsListKey);
+                    savedRegistered = localStorage.getItem(REGISTERED_TENANTS_KEY);
+                    savedTenants = localStorage.getItem(TENANTS_STORAGE_KEY);
                     // Clear all existing storage for full session isolation
                     localStorage.clear();
                     sessionStorage.clear();
                     // Restore registered tenants directory
-                    if (savedRegistered) localStorage.setItem(registeredKey, savedRegistered);
-                    if (savedTenants) localStorage.setItem(tenantsListKey, savedTenants);
+                    if (savedRegistered) localStorage.setItem(REGISTERED_TENANTS_KEY, savedRegistered);
+                    if (savedTenants) localStorage.setItem(TENANTS_STORAGE_KEY, savedTenants);
                   } catch (e) {}
 
                   const mgrToken =
